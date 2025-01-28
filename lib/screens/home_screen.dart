@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -9,17 +10,26 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   OverlayEntry? _overlayEntry;
-  bool _isOverlayOpened = false;
+
+  bool overlayOpenFlag = false;
+
+  late OverlayState _overlayState;
 
   ///
-  void openOverlay({required BuildContext context, required String str}) {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    _overlayState = Overlay.of(context);
+  }
+
+  ///
+  void openOverlay({required String str}) {
     if (_overlayEntry != null) {
       return;
     }
 
-    _isOverlayOpened = true;
-
-    final OverlayState overlayState = Overlay.of(context);
+    overlayOpenFlag = true;
 
     _overlayEntry = OverlayEntry(
       builder: (BuildContext context) => Positioned(
@@ -28,37 +38,28 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Container(
           width: 250,
           height: 250,
-          decoration: BoxDecoration(color: Colors.black.withOpacity(0.7), borderRadius: BorderRadius.circular(10)),
-          child: displayOverlayContent(str: str),
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.7),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                str,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.white, fontSize: 18),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(onPressed: () => openDialog(str: str), child: const Text('ダイアログ開く')),
+              const SizedBox(height: 16),
+              ElevatedButton(onPressed: () => closeOverlay(), child: const Text('オーバーレイ閉じる')),
+            ],
+          ),
         ),
       ),
     );
 
-    overlayState.insert(_overlayEntry!);
-  }
-
-  ///
-  Widget displayOverlayContent({required String str}) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text(
-          str,
-          style: const TextStyle(color: Colors.white, fontSize: 18),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 16),
-        ElevatedButton(
-          onPressed: () => openDialog(context),
-          child: const Text('オーバーレイから\nダイアログ開く'),
-        ),
-        const SizedBox(height: 16),
-        ElevatedButton(
-          onPressed: () => closeOverlay(),
-          child: const Text('オーバーレイ閉じる'),
-        ),
-      ],
-    );
+    _overlayState.insert(_overlayEntry!);
   }
 
   ///
@@ -68,34 +69,31 @@ class _HomeScreenState extends State<HomeScreen> {
       _overlayEntry = null;
     }
 
-    _isOverlayOpened = false;
+    overlayOpenFlag = false;
   }
 
   ///
-  void openDialog(BuildContext context) {
+  void openDialog({required String str}) {
     _overlayEntry?.remove();
     _overlayEntry = null;
 
     // ignore: inference_failure_on_function_invocation
     showDialog(
       context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: const Text('ダイアログ'),
-        content: const Text('ダイアログの中身'),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-
-              if (_isOverlayOpened) {
-                openOverlay(context: context, str: 'aaaaa');
-              }
-            },
-            child: const Text('ダイアログ閉じる'),
-          ),
-        ],
+      builder: (BuildContext context) => const AlertDialog(
+        title: Text('ダイアログ'),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [Text('ダイアログ内容')],
+        ),
       ),
-    );
+    ).then((_) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        if (overlayOpenFlag) {
+          openOverlay(str: str);
+        }
+      });
+    });
   }
 
   ///
@@ -107,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             ElevatedButton(
-              onPressed: () => openOverlay(context: context, str: 'aaaaa'),
+              onPressed: () => openOverlay(str: 'aaaaa'),
               child: const Text('オーバーレイ開く'),
             ),
           ],
