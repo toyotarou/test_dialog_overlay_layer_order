@@ -23,10 +23,43 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () => overlayService.openOverlay(context: context, dialogContentWidget: const SecondScreen()),
-          child: const Text('オーバーレイ開く'),
+      body: SafeArea(
+        child: Column(
+          children: <Widget>[
+            /////
+
+            ElevatedButton(
+              onPressed: () => overlayService.openOverlay(
+                context: context,
+                str: 'aaa',
+                dialogContentWidget: const SecondScreen(str: 'aaa'),
+              ),
+              child: const Text('aaa'),
+            ),
+
+            /////
+
+            ElevatedButton(
+              onPressed: () => overlayService.openOverlay(
+                context: context,
+                str: 'bbb',
+                dialogContentWidget: const SecondScreen(str: 'bbb'),
+              ),
+              child: const Text('bbb'),
+            ),
+            /////
+
+            ElevatedButton(
+              onPressed: () => overlayService.openOverlay(
+                context: context,
+                str: 'ccc',
+                dialogContentWidget: const SecondScreen(str: 'ccc'),
+              ),
+              child: const Text('ccc'),
+            ),
+
+            /////
+          ],
         ),
       ),
     );

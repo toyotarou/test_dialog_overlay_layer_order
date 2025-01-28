@@ -14,10 +14,8 @@ class OverlayService {
   void initOverlay(BuildContext context) => overlayState = Overlay.of(context);
 
   ///
-  void openOverlay({required BuildContext context, required Widget dialogContentWidget}) {
-    if (overlayEntry != null) {
-      return;
-    }
+  void openOverlay({required BuildContext context, required Widget dialogContentWidget, required String str}) {
+    closeOverlay();
 
     overlayOpenFlag = true;
 
@@ -30,9 +28,15 @@ class OverlayService {
           height: 250,
           decoration: BoxDecoration(color: Colors.black.withOpacity(0.7), borderRadius: BorderRadius.circular(10)),
           child: OverlayContentWidget(
-            str: 'bbb',
+            str: str,
             dialogContentWidget: dialogContentWidget,
-            onOpenDialog: () => callDialogService(context: context, dialogContentWidget: dialogContentWidget),
+            onOpenDialog: () {
+              callDialogService(
+                context: context,
+                str: str,
+                dialogContentWidget: dialogContentWidget,
+              );
+            },
             onCloseOverlay: closeOverlay,
           ),
         ),
@@ -52,11 +56,12 @@ class OverlayService {
   }
 
   ///
-  Future<void> callDialogService({required BuildContext context, required Widget dialogContentWidget}) async {
+  Future<void> callDialogService(
+      {required BuildContext context, required String str, required Widget dialogContentWidget}) async {
     await openDialog(
       context: context,
       removeOverlay: closeOverlay,
-      reOpenOverlay: () => openOverlay(context: context, dialogContentWidget: dialogContentWidget),
+      reOpenOverlay: () => openOverlay(context: context, str: str, dialogContentWidget: dialogContentWidget),
       isOverlayOpen: overlayOpenFlag,
       dialogContentWidget: dialogContentWidget,
     );
