@@ -6,7 +6,6 @@ import '../extensions/extensions.dart';
 ///
 Future<void> openDialog({
   required BuildContext context,
-  required String str,
   required VoidCallback removeOverlay,
   required VoidCallback reOpenOverlay,
   required bool isOverlayOpen,
@@ -19,10 +18,7 @@ Future<void> openDialog({
     context: context,
     builder: (BuildContext context) {
       return Container(
-        padding: EdgeInsets.only(
-          top: context.screenSize.height * 0.3,
-          left: context.screenSize.width * 0.3,
-        ),
+        padding: EdgeInsets.only(top: context.screenSize.height * 0.3, left: context.screenSize.width * 0.3),
         child: Dialog(
           backgroundColor: Colors.blueGrey.withOpacity(0.3),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),

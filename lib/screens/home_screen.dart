@@ -12,22 +12,20 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final OverlayService overlayService = OverlayService();
 
+  ///
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     overlayService.initOverlay(context);
   }
 
+  ///
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: ElevatedButton(
-          onPressed: () => overlayService.openOverlay(
-            context: context,
-            str: 'aaaaa',
-            dialogContentWidget: const SecondScreen(),
-          ),
+          onPressed: () => overlayService.openOverlay(context: context, dialogContentWidget: const SecondScreen()),
           child: const Text('オーバーレイ開く'),
         ),
       ),
