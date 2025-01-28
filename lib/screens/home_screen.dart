@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../service/overlay_service.dart';
+import 'second_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -9,12 +10,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final OverlayService _overlayService = OverlayService();
+  final OverlayService overlayService = OverlayService();
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _overlayService.initOverlay(context);
+    overlayService.initOverlay(context);
   }
 
   @override
@@ -22,8 +23,11 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: Center(
         child: ElevatedButton(
-          onPressed: () =>
-              _overlayService.openOverlay(context: context, str: 'aaaaa'),
+          onPressed: () => overlayService.openOverlay(
+            context: context,
+            str: 'aaaaa',
+            dialogContentWidget: const SecondScreen(),
+          ),
           child: const Text('オーバーレイ開く'),
         ),
       ),
