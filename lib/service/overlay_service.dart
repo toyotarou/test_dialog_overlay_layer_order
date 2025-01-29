@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../extensions/extensions.dart';
 import '../parts/overlay_content_widget.dart';
 import 'dialog_service.dart';
 
@@ -60,10 +61,16 @@ class OverlayService {
       {required BuildContext context, required String str, required Widget dialogContentWidget}) async {
     await openDialog(
       context: context,
-      removeOverlay: closeOverlay,
-      reOpenOverlay: () => openOverlay(context: context, str: str, dialogContentWidget: dialogContentWidget),
-      isOverlayOpen: overlayOpenFlag,
       dialogContentWidget: dialogContentWidget,
+
+      ///
+      paddingTop: context.screenSize.height * 0.3,
+      paddingLeft: context.screenSize.width * 0.3,
+
+      ///
+      closeOverlay: closeOverlay,
+      openOverlay: () => openOverlay(context: context, str: str, dialogContentWidget: dialogContentWidget),
+      isOverlayOpen: overlayOpenFlag,
     );
   }
 }
